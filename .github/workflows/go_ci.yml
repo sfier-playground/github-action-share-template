@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PAT: ${{ secrets.PAT }}
-      GOPRIVATE: github.com/sifer169966/go-logger
+      GOPRIVATE: github.com/sifer169966
       GOPROXY: direct
     steps:
       - name: Checkout code
@@ -15,7 +15,7 @@ jobs:
           persist-credentials: false
       - name: Setup Private Dependency
         run: |
-          git config --global url."https://$PAT:sifer169966@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://$PAT@github.com/".insteadOf "https://github.com/"
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
