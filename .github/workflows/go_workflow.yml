@@ -8,12 +8,12 @@ on:
 
 jobs:
   ci:
-    uses: sfier-playground/github-action-share-template/.github/workflows/go_ci.yaml@master
+    uses: sfier-playground/github-action-share-template/.github/workflows/go_ci.yml@master
   dev:
     needs: ci
     name: deploy cloudrun to dev environment
     if: ${{ github.ref == 'refs/heads/develop' || github.base_ref == 'develop' }}
-    uses: sfier-playground/github-action-share-template/.github/workflows/cloudrun_deployment.yaml@master
+    uses: sfier-playground/github-action-share-template/.github/workflows/cloudrun_deployment.yml@master
     permissions: 
       id-token: write
       contents: read
@@ -24,7 +24,7 @@ jobs:
   stage:
     needs: ci
     if: ${{ github.ref == 'refs/heads/stage' || github.base_ref == 'stage' }}
-    uses: sfier-playground/github-action-share-template/.github/workflows/cloudrun_deployment.yaml@master
+    uses: sfier-playground/github-action-share-template/.github/workflows/cloudrun_deployment.yml@master
     permissions: 
       id-token: write
       contents: read
@@ -35,7 +35,7 @@ jobs:
   prod:
     needs: ci
     if: ${{ github.ref == 'refs/heads/master' || github.base_ref == 'master' }}
-    uses: sfier-playground/github-action-share-template/.github/workflows/cloudrun_deployment.yaml@master
+    uses: sfier-playground/github-action-share-template/.github/workflows/cloudrun_deployment.yml@master
     permissions: 
       id-token: write
       contents: read
