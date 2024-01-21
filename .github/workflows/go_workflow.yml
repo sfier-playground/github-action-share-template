@@ -1,15 +1,16 @@
 on:
-  push:
-    branches: [dev, stage, master]
   workflow_call:
-    inputs:
-      service-name:
-        type: string
-        required: true
-        description: Name of the service for deployment.   
+    # inputs:
+    #   service-name:
+    #     type: string
+    #     required: true
+    #     description: Name of the service for deployment.   
 
 jobs:
+  ci:
+    uses: ./go_ci.yaml
   dev:
+    needs: ci
     name: deploy cloudrun to dev environment
     if: ${{ github.ref == 'refs/heads/develop' || github.base_ref == 'develop' }}
     uses: ./cloudrun_deployment.yaml
@@ -21,6 +22,7 @@ jobs:
       ref: ${{ github.sha }}
     secrets: inherit
   stage:
+    needs: ci
     if: ${{ github.ref == 'refs/heads/stage' || github.base_ref == 'stage' }}
     uses: ./cloudrun_deployment.yaml
     permissions: 
@@ -30,7 +32,8 @@ jobs:
       environment: stage
       ref: ${{ github.sha }}
     secrets: inherit
-  prod: 
+  prod:
+    needs: ci
     if: ${{ github.ref == 'refs/heads/master' || github.base_ref == 'master' }}
     uses: ./cloudrun_deployment.yaml
     permissions: 
