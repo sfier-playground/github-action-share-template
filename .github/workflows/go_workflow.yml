@@ -14,9 +14,9 @@ jobs:
     name: deploy cloudrun to dev environment
     if: ${{ github.ref == 'refs/heads/develop' || github.base_ref == 'develop' }}
     uses: sfier-playground/github-action-share-template/.github/workflows/cloud_run_deployment.yml@master
-    permissions: 
-      id-token: write
-      contents: read
+    # permissions: 
+    #   id-token: write
+    #   contents: read
     with: 
       environment: dev
       ref: ${{ github.sha }}
@@ -25,9 +25,9 @@ jobs:
     needs: ci
     if: ${{ github.ref == 'refs/heads/stage' || github.base_ref == 'stage' }}
     uses: sfier-playground/github-action-share-template/.github/workflows/cloud_run_deployment.yml@master
-    permissions: 
-      id-token: write
-      contents: read
+    # permissions: 
+    #   id-token: write
+    #   contents: read
     with: 
       environment: stage
       ref: ${{ github.sha }}
@@ -36,9 +36,9 @@ jobs:
     needs: ci
     if: ${{ github.ref == 'refs/heads/master' || github.base_ref == 'master' }}
     uses: sfier-playground/github-action-share-template/.github/workflows/cloud_run_deployment.yml@master
-    permissions: 
-      id-token: write
-      contents: read
+    # permissions: 
+    #   id-token: write
+    #   contents: read
     with:
       environment: prod
       ref: ${{ github.sha }}
