@@ -2,7 +2,7 @@ on:
   workflow_call:
 
 jobs:
-  ci:
+  go-ci:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
