@@ -8,7 +8,7 @@ on:
 
 jobs:
   ci:
-    uses: ./.github/workflows/go_ci.yaml
+    uses: sfier-playground/github-action-share-template/.github/workflows/go_ci.yaml@master
   dev:
     needs: ci
     name: deploy cloudrun to dev environment
