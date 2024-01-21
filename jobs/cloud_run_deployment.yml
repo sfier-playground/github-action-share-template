@@ -1,0 +1,47 @@
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+        description: Name of the target environment.    
+      ref:  
+        type: string
+        required: true
+        description: The tag or SHA to checkout.
+jobs:
+  ci:
+    uses: ./go_ci.yaml
+  build-and-deploy:
+    needs: ci
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      SERVICE_NAME: ${{ vars.SERVICE_NAME }}
+      REGION: ${{ secrets.GCP_REGION }}
+      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+    steps:
+      - name: Build Docker image
+        run: |
+          docker build -t gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA .
+          docker tag gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA gcr.io/$PROJECT_ID/$SERVICE_NAME:latest
+
+      - name: Configure Google Cloud CLI
+        run: |
+          echo $GOOGLE_APPLICATION_CREDENTIALS > gcp-key.json
+          gcloud auth activate-service-account --key-file=gcp-key.json
+          gcloud config set project $PROJECT_ID
+          gcloud config set run/region $REGION
+
+      - name: Push Docker image to GCP Container Registry
+        run: |
+          docker push gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA
+          docker push gcr.io/$PROJECT_ID/$SERVICE_NAME:latest
+
+      - name: Deploy to Google Cloud Run
+        run: |
+          gcloud run deploy $SERVICE_NAME \
+            --image=gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA \
+            --platform=managed \
+            --region=$REGION \
+            --allow-unauthenticated
