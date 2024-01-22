@@ -60,7 +60,8 @@ jobs:
           tags: |
             gcr.io/$PROJECT_ID/${{ inputs.service-name }}:$GITHUB_SHA
             gcr.io/$PROJECT_ID/${{ inputs.service-name }}:latest
-
+          secrets: |
+            PAT=${{ secrets.PAT }}
       # - name: Push Docker image to GCP Container Registry
       #   run: |
       #     docker push gcr.io/$PROJECT_ID/${{ inputs.service-name }}:$GITHUB_SHA
