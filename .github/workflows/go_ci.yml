@@ -12,12 +12,14 @@ jobs:
 
       - name: Setup SSH
         run: |
-          eval "$(ssh-agent -s)"
           mkdir -p ~/.ssh
-          echo -n ${{ secrets.GIT_DEPLOY_KEY  }} | tr -d '\r' > ~/.ssh/id_rsa
+          echo -e ${{ secrets.GIT_DEPLOY_KEY  }} > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           ssh-add ~/.ssh/id_rsa
+
+      - name: Debug SSH Key
+        run: ssh-keygen -y -f ~/.ssh/id_rsa
 
       - name: Setup Private Module
         run: |
