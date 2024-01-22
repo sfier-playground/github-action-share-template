@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-      SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
+      SERVICE_NAME: ${{ inputs.service-name }}
       REGION: ${{ secrets.GCP_REGION }}
       GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
     steps:
