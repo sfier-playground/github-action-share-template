@@ -23,7 +23,7 @@ jobs:
         run: echo "export GIT_SSH=\$(which ssh)" >> $GITHUB_ENV
 
       - name: Debug SSH Key
-        run: ssh-add -l
+        run: ssh -V
 
       - name: Setup Private Module
         run: |
