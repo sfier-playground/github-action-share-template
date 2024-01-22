@@ -27,7 +27,9 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: "Hi, deployment flow is unavailable"
+      - name: "Mocking"
+        run: |
+          echo "Hi, deployment flow is unavailable"
     # env:
     #   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
     #   # SERVICE_NAME: ${{ inputs.service-name }}
