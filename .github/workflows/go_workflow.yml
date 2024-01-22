@@ -1,10 +1,10 @@
 on:
   workflow_call:
     # inputs:
-    #   service-name:
+    #   git-deploy-key:
     #     type: string
     #     required: true
-    #     description: Name of the service for deployment.   
+    #     description: github ssh key to access private repo.   
 
 jobs:
   ci:
