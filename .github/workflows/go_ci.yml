@@ -12,8 +12,11 @@ jobs:
 
       - name: Setup SSH
         run: |
+          sudo apt-get update
+          sudo apt-get install dos2unix
           mkdir -p ~/.ssh
           echo -e ${{ secrets.GIT_DEPLOY_KEY  }} > ~/.ssh/id_rsa
+          dos2unix ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
 
