@@ -10,18 +10,24 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup SSH
-        run: |
-          sudo apt-get update
-          sudo apt-get install dos2unix
+      - name: Setup ssh
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.socks
+        run:
           mkdir -p ~/.ssh
-          echo -e ${{ secrets.GIT_DEPLOY_KEY  }} > ~/.ssh/id_rsa
-          dos2unix ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-
-      - name: Set GIT_SSH
-        run: echo "export GIT_SSH=\$(which ssh)" >> $GITHUB_ENV
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null	
+          ssh-add - <<< "${{ secrets.GIT_DEPLOY_KEY  }}"
+          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV   
+      # - name: Setup SSH
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install dos2unix
+      #     mkdir -p ~/.ssh
+      #     echo -e ${{ secrets.GIT_DEPLOY_KEY  }} > ~/.ssh/id_rsa
+      #     dos2unix ~/.ssh/id_rsa
+      #     chmod 600 ~/.ssh/id_rsa
+      #     ssh-keyscan github.com >> ~/.ssh/known_hosts
 
       - name: Debug SSH Key
         run: ssh -V
