@@ -26,51 +26,53 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    env:
-      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-      # SERVICE_NAME: ${{ inputs.service-name }}
-      REGION: ${{ secrets.GCP_REGION }}
-      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
     steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+      - name: "Hi, deployment flow is unavailable"
+    # env:
+    #   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+    #   # SERVICE_NAME: ${{ inputs.service-name }}
+    #   REGION: ${{ secrets.GCP_REGION }}
+    #   GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+    # steps:
+    #   - name: Set up QEMU
+    #     uses: docker/setup-qemu-action@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+    #   - name: Set up Docker Buildx
+    #     uses: docker/setup-buildx-action@v3
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+    #   - name: Login to Docker Hub
+    #     uses: docker/login-action@v3
+    #     with:
+    #       username: ${{ secrets.DOCKERHUB_USERNAME }}
+    #       password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # need to loging gcloud first
-      # - name: Configure Google Cloud CLI
-      #   run: |
-      #     echo $GOOGLE_APPLICATION_CREDENTIALS > gcp-key.json
-      #     gcloud auth activate-service-account --key-file=gcp-key.json
-      #     gcloud config set project $PROJECT_ID
-      #     gcloud config set run/region $REGION
+    #   # need to loging gcloud first
+    #   # - name: Configure Google Cloud CLI
+    #   #   run: |
+    #   #     echo $GOOGLE_APPLICATION_CREDENTIALS > gcp-key.json
+    #   #     gcloud auth activate-service-account --key-file=gcp-key.json
+    #   #     gcloud config set project $PROJECT_ID
+    #   #     gcloud config set run/region $REGION
 
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: |
-            gcr.io/$PROJECT_ID/${{ inputs.service-name }}:$GITHUB_SHA
-            gcr.io/$PROJECT_ID/${{ inputs.service-name }}:latest
-          secrets: |
-            PAT=${{ secrets.PAT }}
-      # - name: Push Docker image to GCP Container Registry
-      #   run: |
-      #     docker push gcr.io/$PROJECT_ID/${{ inputs.service-name }}:$GITHUB_SHA
-      #     docker push gcr.io/$PROJECT_ID/${{ inputs.service-name }}:latest
+    #   - name: Build and push
+    #     uses: docker/build-push-action@v5
+    #     with:
+    #       context: .
+    #       push: true
+    #       tags: |
+    #         gcr.io/$PROJECT_ID/${{ inputs.service-name }}:$GITHUB_SHA
+    #         gcr.io/$PROJECT_ID/${{ inputs.service-name }}:latest
+    #       secrets: |
+    #         PAT=${{ secrets.PAT }}
+    #   # - name: Push Docker image to GCP Container Registry
+    #   #   run: |
+    #   #     docker push gcr.io/$PROJECT_ID/${{ inputs.service-name }}:$GITHUB_SHA
+    #   #     docker push gcr.io/$PROJECT_ID/${{ inputs.service-name }}:latest
 
-      # - name: Deploy to Google Cloud Run
-      #   run: |
-      #     gcloud run deploy ${{ inputs.service-name }} \
-      #       --image=gcr.io/$PROJECT_ID/${{ inputs.service-name }}:$GITHUB_SHA \
-      #       --platform=managed \
-      #       --region=$REGION \
-      #       --allow-unauthenticated
+    #   # - name: Deploy to Google Cloud Run
+    #   #   run: |
+    #   #     gcloud run deploy ${{ inputs.service-name }} \
+    #   #       --image=gcr.io/$PROJECT_ID/${{ inputs.service-name }}:$GITHUB_SHA \
+    #   #       --platform=managed \
+    #   #       --region=$REGION \
+    #   #       --allow-unauthenticated
