@@ -17,8 +17,11 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
 
+      - name: Set GIT_SSH
+        run: echo "export GIT_SSH=\$(which ssh)" >> $GITHUB_ENV
+
       - name: Debug SSH Key
-        run: ssh-keygen -y -f ~/.ssh/id_rsa
+        run: ssh-add -l
 
       - name: Setup Private Module
         run: |
