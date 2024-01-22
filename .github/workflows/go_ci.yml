@@ -4,23 +4,30 @@ on:
 jobs:
   go-ci:
     runs-on: ubuntu-latest
-    env:
-      PAT: ${{ secrets.PAT }}
-      GOPRIVATE: github.com/sifer169966
-      GOPROXY: direct
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - name: Setup Private Dependency
+
+      - name: Setup SSH
         run: |
-          git config --global url."https://$PAT@github.com/".insteadOf "https://github.com/"
+          mkdir /root/.ssh
+          echo -n $GIT_DEPLOY_KEY | base64 --decode > /root/.ssh/id_rsa
+          chmod 600 /root/.ssh/id_rsa
+          ssh-keyscan github.com >> /root/.ssh/known_hosts
+
+      - name: Setup Private Module
+        run: |
+          git config --global url."ssh://git@github.com/".insteadOf https://github.com/
+          go env -w GOPRIVATE=gitlab.bitkub.io/*
+          go env -w GOPROXY=direct
+
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: 1.21
-
+          
       - name: Install dependencies
         run: go mod download
 
