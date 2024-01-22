@@ -1,20 +1,34 @@
 on:
   workflow_call:
+    # secrests:
+    #   GCP_PROJECT_ID:
+    #     required: true
+    #     description: GCP Project ID.    
+    #   GCP_REGION:  
+    #     required: true
+    #     description: GCP Target Region.
+    #   GOOGLE_APPLICATION_CREDENTIALS:
+    #     required: true
+    #     description: GCP Service Account.
     inputs:
-      environment:
+      environment: 
         type: string
         required: true
-        description: Name of the target environment.    
-      ref:  
+        description: environment name
+      service-name:
         type: string
         required: true
-        description: The tag or SHA to checkout.
+        description: application name
+      ref:
+        type: string
+        required: true
+        description: git commit
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     env:
       PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-      SERVICE_NAME: ${{ vars.SERVICE_NAME }}
+      SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
       REGION: ${{ secrets.GCP_REGION }}
       GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
     steps:

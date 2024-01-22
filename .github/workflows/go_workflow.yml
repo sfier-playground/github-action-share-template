@@ -1,37 +1,49 @@
 on:
   workflow_call:
-    secrets:
-      GIT_DEPLOY_KEY:
+    # secrets:
+    #   GIT_DEPLOY_KEY:
+    #     required: true
+    #     description: github ssh key to access private repo.   
+    #   GCP_PROJECT_ID:
+    #     required: true
+    #     description: GCP Project ID.    
+    #   GCP_REGION:  
+    #     required: true
+    #     description: GCP Target Region.
+    #   GOOGLE_APPLICATION_CREDENTIALS:
+    #     required: true
+    #     description: GCP Service Account.
+    inputs:
+      service-name:
+        type: string
         required: true
-        description: github ssh key to access private repo.   
-
+        description: application name
+      ref:
+        type: string
+        required: true
+        description: git commit
 jobs:
   ci:
     uses: sfier-playground/github-action-share-template/.github/workflows/go_ci.yml@master
-    secrets:
-      GIT_DEPLOY_KEY: ${{ secrets.GIT_DEPLOY_KEY }}
+    secrets: inherit
+    # secrets:
+    #   GIT_DEPLOY_KEY: ${{ secrets.GIT_DEPLOY_KEY }}
   dev:
     needs: ci
     name: deploy cloudrun to dev environment
     if: ${{ github.ref == 'refs/heads/develop' || github.base_ref == 'develop' }}
     uses: sfier-playground/github-action-share-template/.github/workflows/cloud_run_deployment.yml@master
-    # permissions: 
-    #   id-token: write
-    #   contents: read
     with: 
       environment: dev
-      ref: ${{ github.sha }}
+      ref: ${{ inputs.sha }}
     secrets: inherit
   stage:
     needs: ci
     if: ${{ github.ref == 'refs/heads/stage' || github.base_ref == 'stage' }}
     uses: sfier-playground/github-action-share-template/.github/workflows/cloud_run_deployment.yml@master
-    # permissions: 
-    #   id-token: write
-    #   contents: read
     with: 
       environment: stage
-      ref: ${{ github.sha }}
+      ref: ${{ inputs.sha }}
     secrets: inherit
   prod:
     needs: ci
@@ -42,5 +54,5 @@ jobs:
     #   contents: read
     with:
       environment: prod
-      ref: ${{ github.sha }}
+      ref: ${{ inputs.sha }}
     secrets: inherit

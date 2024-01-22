@@ -1,9 +1,9 @@
 on:
   workflow_call:
-    secrets:
-      GIT_DEPLOY_KEY:
-        required: true
-        description: github ssh key to access private repo.   
+    # secrets:
+    #   GIT_DEPLOY_KEY:
+    #     required: true
+    #     description: github ssh key to access private repo.   
 
 jobs:
   go-ci:
