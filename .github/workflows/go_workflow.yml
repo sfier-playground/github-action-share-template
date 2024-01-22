@@ -1,14 +1,16 @@
 on:
   workflow_call:
-    # inputs:
-    #   git-deploy-key:
-    #     type: string
-    #     required: true
-    #     description: github ssh key to access private repo.   
+    inputs:
+      git-deploy-key:
+        type: string
+        required: true
+        description: github ssh key to access private repo.   
 
 jobs:
   ci:
     uses: sfier-playground/github-action-share-template/.github/workflows/go_ci.yml@master
+    with:
+      git-deploy-key: ${{ inputs.git-deploy-key }}
   dev:
     needs: ci
     name: deploy cloudrun to dev environment
