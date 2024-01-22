@@ -26,9 +26,9 @@ jobs:
 
       - name: Setup Private Module
         run: |
-          git config --global url."git@github.com:sifer169966".insteadOf https://github.com/sifer169966/
+          git config --global url."ssh://git@github.com".insteadOf https://github.com/
           go env -w GOPRIVATE=github.com/sifer169966/go-logger
-          go env -w GOPROXY='https://proxy.golang.org,direct'
+          go env -w GOPROXY='direct'
 
       - name: Set up Go
         uses: actions/setup-go@v4
