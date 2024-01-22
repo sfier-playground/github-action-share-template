@@ -19,7 +19,7 @@ jobs:
 
       - name: Setup Private Module
         run: |
-          git config --global url."ssh://git@github.com/".insteadOf https://github.com
+          git config --global url."ssh://git@github.com/".insteadOf https://github.com/
           go env -w GOPRIVATE=github.com/sifer169966/*
           go env -w GOPROXY=direct
 
