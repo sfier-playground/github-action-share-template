@@ -34,6 +34,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/develop' || github.base_ref == 'develop' }}
     uses: sfier-playground/github-action-share-template/.github/workflows/cloud_run_deployment.yml@master
     with: 
+      service-name: ${{ inputs.SERVICE_NAME }}
       environment: dev
       ref: ${{ inputs.sha }}
     secrets: inherit
@@ -42,6 +43,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/stage' || github.base_ref == 'stage' }}
     uses: sfier-playground/github-action-share-template/.github/workflows/cloud_run_deployment.yml@master
     with: 
+      service-name: ${{ inputs.SERVICE_NAME }}
       environment: stage
       ref: ${{ inputs.sha }}
     secrets: inherit
