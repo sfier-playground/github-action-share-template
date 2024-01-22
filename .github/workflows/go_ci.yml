@@ -15,9 +15,10 @@ jobs:
           SSH_AUTH_SOCK: /tmp/ssh_agent.socks
         run: |
           mkdir -p ~/.ssh
+          echo -n "${{ secrets.GIT_DEPLOY_KEY  }}" > ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null	
-          ssh-add - <<< "${{ secrets.GIT_DEPLOY_KEY  }}"
+          ssh-add ~/.ssh/id_rsa
           echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV   
       # - name: Setup SSH
       #   run: |
