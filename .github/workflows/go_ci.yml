@@ -9,13 +9,16 @@ jobs:
         uses: actions/checkout@v3
         with:
           persist-credentials: false
-
+          
       - name: Setup SSH
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
           mkdir -p ~/.ssh
-          echo -n $GIT_DEPLOY_KEY | base64 --decode > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null	
+          ssh-add - <<< "${{ secrets.GIT_DEPLOY_KEY }}"
+          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV 
 
       - name: Setup Private Module
         run: |
