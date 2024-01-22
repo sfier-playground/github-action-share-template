@@ -53,6 +53,7 @@ jobs:
     #   id-token: write
     #   contents: read
     with:
+      service-name: ${{ inputs.SERVICE_NAME }}
       environment: prod
       ref: ${{ inputs.sha }}
     secrets: inherit
