@@ -2,7 +2,6 @@ on:
   workflow_call:
     secrets:
       GIT_DEPLOY_KEY:
-        type: string
         required: true
         description: github ssh key to access private repo.   
 
