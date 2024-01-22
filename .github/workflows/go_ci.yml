@@ -10,12 +10,19 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo -n ${{ secrets.GIT_DEPLOY_KEY  }} | tr -d '\r' > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          known_hosts: github.com
+          key: ${{ secrets.GIT_DEPLOY_KEY }}
+
+      # - name: Setup SSH
+      #   run: |
+      #     eval "$(ssh-agent -s)"
+      #     mkdir -p ~/.ssh
+      #     echo -n ${{ secrets.GIT_DEPLOY_KEY  }} | tr -d '\r' > ~/.ssh/id_rsa
+      #     chmod 600 ~/.ssh/id_rsa
+      #     ssh-keyscan github.com >> ~/.ssh/known_hosts
 
       - name: Setup Private Module
         run: |
