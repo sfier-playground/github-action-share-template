@@ -15,7 +15,11 @@ jobs:
           mkdir -p ~/.ssh
           echo -n ${{ secrets.GIT_DEPLOY_KEY  }} | base64 -d > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keygen -l -f ~/.ssh/id_rsa
+          if [ -s "your_file.txt" ]; then
+            echo "File is not empty."
+          else
+            echo "File is empty."
+          fi
           ssh-keyscan github.com >> ~/.ssh/known_hosts
 
       - name: Debug SSH Key
