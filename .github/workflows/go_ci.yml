@@ -1,7 +1,7 @@
 on:
   workflow_call:
-    inputs:
-      git-deploy-key:
+    secrets:
+      GIT_DEPLOY_KEY:
         type: string
         required: true
         description: github ssh key to access private repo.   
@@ -18,7 +18,7 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo -n ${{ inputs.git-deploy-key }} | base64 -d > ~/.ssh/id_rsa
+          echo -n ${{ secrets.GIT_DEPLOY_KEY }} | base64 -d > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           if [ -s ~/.ssh/id_rsa ]; then
             echo "File is not empty."
