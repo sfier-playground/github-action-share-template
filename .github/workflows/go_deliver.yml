@@ -18,7 +18,6 @@ jobs:
     with: 
       service-name: ${{ inputs.service-name }}
       environment: dev
-      ref: ${{ github.sha }}
     secrets: inherit
   sit:
     name: deploy application to sit environment
@@ -28,7 +27,6 @@ jobs:
     with: 
       service-name: ${{ inputs.service-name }}
       environment: sit
-      ref: ${{ github.sha }}
     secrets: inherit
   stg:
     name: deploy application to staging environment
@@ -38,5 +36,4 @@ jobs:
     with:
       service-name: ${{ inputs.service-name }}
       environment: stg
-      ref: ${{ github.sha }}
     secrets: inherit
