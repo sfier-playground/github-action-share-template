@@ -39,6 +39,7 @@ jobs:
       - name: Set Image URL
         id: set-image-url
         run: |
+          echo "IMAGE_BASE_NAME=${{ env.JOB_ENV_BASE_REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ inputs.environment  }}-${{ inputs.service-name }}" >> "$GITHUB_OUTPUT"
           echo "IMAGE_SHA_URL=${{ env.JOB_ENV_BASE_REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ inputs.environment  }}-${{ inputs.service-name }}:${{ github.sha }}" >> "$GITHUB_OUTPUT"
           echo "IMAGE_LATEST_URL=${{ env.JOB_ENV_BASE_REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ inputs.environment  }}-${{ inputs.service-name }}:latest" >> "$GITHUB_OUTPUT"
       - name: Docker Login
@@ -46,7 +47,7 @@ jobs:
           echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
       - name: Docker Build & Push
         run: |
-          docker build --file ./Dockerfile --tag ${{ steps.set-image-url.outputs.IMAGE_SHA_URL }} --tag ${{ steps.set-image-url.outputs.IMAGE_LATEST_URL }}  --build-arg PAT=${{ secrets.PAT }}
-          docker push reg/user/image --all-tags
+          docker build --file ./Dockerfile --tag ${{ steps.set-image-url.outputs.IMAGE_SHA_URL }} --tag ${{ steps.set-image-url.outputs.IMAGE_LATEST_URL }}  --build-arg PAT=${{ secrets.PAT }} .
+          docker push ${{ steps.set-image-url.outputs.IMAGE_BASE_NAME }} --all-tags
 
 
