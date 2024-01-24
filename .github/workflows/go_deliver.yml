@@ -8,13 +8,13 @@ on:
 jobs:
   go-quality-verification:
     name: golang quality gate
-    uses: ./.github/workflows/jobs/go_quality_verification.yml
+    uses: ./.github/workflows/go_quality_verification.yml
     secrets: inherit
   dev:
     name: deploy application to dev environment
     needs: go-quality-verification
     if: ${{ github.ref == 'refs/heads/develop' || github.base_ref == 'develop' }}
-    uses: sfier-playground/github-action-share-template/.github/workflows/cloud_run_deployment.yml@master
+    uses: ./.github/workflows/cloud_run_deployment.yml
     with: 
       service-name: ${{ inputs.service-name }}
       environment: dev
