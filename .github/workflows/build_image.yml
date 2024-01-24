@@ -24,7 +24,7 @@ jobs:
         uses: 'google-github-actions/auth@v2'
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          credentials_json: ${{ echo -n "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" | base64 -d }}
+          credentials_json: '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}'
           region: ${{ secrets.GCP_REGION }}
         # run: |
         #   mkdir -p ~/.gcp-creds
