@@ -1,0 +1,42 @@
+on:
+  workflow_call:
+    inputs:
+      service-name:
+        type: string
+        required: true
+        description: application name
+jobs:
+  go-quality-verification:
+    name: golang quality gate
+    uses: ./.github/workflows/jobs/go_quality_verification.yml
+    secrets: inherit
+  dev:
+    name: deploy application to dev environment
+    needs: go-quality-verification
+    if: ${{ github.ref == 'refs/heads/develop' || github.base_ref == 'develop' }}
+    uses: sfier-playground/github-action-share-template/.github/workflows/cloud_run_deployment.yml@master
+    with: 
+      service-name: ${{ inputs.service-name }}
+      environment: dev
+      ref: ${{ github.sha }}
+    secrets: inherit
+  sit:
+    name: deploy application to sit environment
+    needs: go-quality-verification
+    if: ${{ startsWith(github.ref,'refs/heads/release/')  || startsWith(github.ref,'refs/heads/hotfix/') }}
+    uses: sfier-playground/github-action-share-template/.github/workflows/cloud_run_deployment.yml@master
+    with: 
+      service-name: ${{ inputs.service-name }}
+      environment: sit
+      ref: ${{ github.sha }}
+    secrets: inherit
+  stg:
+    name: deploy application to staging environment
+    needs: go-quality-verification
+    if: ${{ github.ref == 'refs/heads/master' || github.base_ref == 'master' }}
+    uses: sfier-playground/github-action-share-template/.github/workflows/cloud_run_deployment.yml@master
+    with:
+      service-name: ${{ inputs.service-name }}
+      environment: stg
+      ref: ${{ github.sha }}
+    secrets: inherit

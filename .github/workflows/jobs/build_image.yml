@@ -1,0 +1,19 @@
+on:
+  workflow_call:
+    # inputs:
+    #   service-name:
+    #     type: string
+    #     required: true
+    #     description: application name
+    #   ref:
+    #     type: string
+    #     required: true
+    #     description: git commit
+
+jobs:
+  go_quality_verification:
+    steps:
+      - name: "Set Image URL"
+        run:
+      - name: "Docker Login"
+        run:

@@ -1,42 +1,45 @@
 on:
   workflow_call:
-    # secrets:
-    #   GIT_DEPLOY_KEY:
-    #     required: true
-    #     description: github ssh key to access private repo.   
+    inputs:
+      go-version:
+        type: string
+        required: false
+        description: go version to run testing
+        default: ~1.21
 
 jobs:
-  go-ci:
+  go-quality-verification:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           persist-credentials: false
-
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
           echo -n "${{ secrets.GIT_DEPLOY_KEY }}" | base64 --decode > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-
       - name: Debug SSH Key
         run: ssh -V
-
-      - name: Setup Private Module
+      - name: Setup Go Private Module
         run: |
           git config --global url."ssh://git@github.com/".insteadOf https://github.com/
           go env -w GOPRIVATE=github.com/sifer169966/go-logger
           go env -w GOPROXY='direct'
-
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: 1.21
-
-      - name: Install dependencies
+          go-version: ${{ inputs.go-version }}
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          # Require: The version of golangci-lint to use.
+          # When `install-mode` is `binary` (default) the value can be v1.2 or v1.2.3 or `latest` to use the latest version.
+          # When `install-mode` is `goinstall` the value can be v1.2.3, `latest`, or the hash of a commit.
+          version: v1.54
+      - name: Install Go Modules
         run: go mod download
-
-      - name: Run tests
+      - name: Run Tests
         run: go test ./...
