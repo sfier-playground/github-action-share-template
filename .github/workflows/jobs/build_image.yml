@@ -1,19 +1,43 @@
 on:
   workflow_call:
-    # inputs:
-    #   service-name:
-    #     type: string
-    #     required: true
-    #     description: application name
-    #   ref:
-    #     type: string
-    #     required: true
-    #     description: git commit
+    inputs:
+      service-name:
+        type: string
+        required: true
+        description: application name
+      environment:
+        type: string
+        required: true
+        description: environemnt to use in the image tag
 
 jobs:
-  go_quality_verification:
+  build_and_publish_image:
+    runs-on: ubuntu-latest
+    env:
+      JOB_ENV_BASE_REGISTRY: gcr.io
     steps:
-      - name: "Set Image URL"
-        run:
-      - name: "Docker Login"
-        run:
+      - name: Configure Google Cloud CLI
+        run: |
+          mkdir -p ~/.gcp-creds
+          echo ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }} > ~/.gcp-creds/gcp-key.json
+          gcloud auth activate-service-account --key-file=~/.gcp-creds/gcp-key.json
+          gcloud config set project ${{ secrets.PROJECT_ID }}
+          gcloud config set run/region ${{ secrets.REGION }}
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - name: Set Image URL
+        id: set-image-url
+        run: |
+          echo "IMAGE_SHA_URL=${{ env.JOB_ENV_BASE_REGISTRY }}/${{ secrets.PROJECT_ID }}/${{ inputs.environment  }}-${{ inputs.service-name }}:${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          echo "IMAGE_LATEST_URL=${{ env.JOB_ENV_BASE_REGISTRY }}/${{ secrets.PROJECT_ID }}/${{ inputs.environment  }}-${{ inputs.service-name }}:latest" >> "$GITHUB_OUTPUT"
+      - name: Docker Login
+        run: |
+          echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      - name: Docker Build & Push
+        run: |
+          docker build --file ./Dockerfile --tag ${{ steps.set-image-url.outputs.IMAGE_SHA_URL }} --tag ${{ steps.set-image-url.outputs.IMAGE_LATEST_URL }}  --build-arg PAT=${{ secrets.PAT }}
+          docker push reg/user/image --all-tags
+
+

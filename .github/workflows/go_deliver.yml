@@ -14,7 +14,7 @@ jobs:
     name: deploy application to dev environment
     needs: go-quality-verification
     if: ${{ github.ref == 'refs/heads/develop' || github.base_ref == 'develop' }}
-    uses: ./.github/workflows/cloud_run_deployment.yml
+    uses: ./.github/workflows/jobs/build_image.yml
     with: 
       service-name: ${{ inputs.service-name }}
       environment: dev
@@ -24,7 +24,7 @@ jobs:
     name: deploy application to sit environment
     needs: go-quality-verification
     if: ${{ startsWith(github.ref,'refs/heads/release/')  || startsWith(github.ref,'refs/heads/hotfix/') }}
-    uses: sfier-playground/github-action-share-template/.github/workflows/cloud_run_deployment.yml@master
+    uses: ./.github/workflows/jobs/build_image.yml
     with: 
       service-name: ${{ inputs.service-name }}
       environment: sit
@@ -34,7 +34,7 @@ jobs:
     name: deploy application to staging environment
     needs: go-quality-verification
     if: ${{ github.ref == 'refs/heads/master' || github.base_ref == 'master' }}
-    uses: sfier-playground/github-action-share-template/.github/workflows/cloud_run_deployment.yml@master
+    uses: ./.github/workflows/jobs/build_image.yml
     with:
       service-name: ${{ inputs.service-name }}
       environment: stg
