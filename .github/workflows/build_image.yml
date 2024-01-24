@@ -16,15 +16,15 @@ jobs:
     env:
       JOB_ENV_BASE_REGISTRY: gcr.io
     steps:
-      - name: Prepare Cred
-        id: p-creds
-        run:
-          echo "C_JSON=$(echo -n "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" | base64 -d)" >> "$GITHUB_OUTPUT"
+      # - name: Prepare Cred
+      #   id: p-creds
+      #   run:
+      #     echo "C_JSON=$(echo -n "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" | base64 -d)" >> "$GITHUB_OUTPUT"
       - name: Configure Google Cloud CLI
         uses: 'google-github-actions/auth@v2'
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          credentials_json: ${{ steps.p-creds.outputs.C_JSON }}
+          credentials_json: ${{ echo -n "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" | base64 -d }}
           region: ${{ secrets.GCP_REGION }}
         # run: |
         #   mkdir -p ~/.gcp-creds
